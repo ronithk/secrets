@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "secrets-cli"
+name = "secretscli"
 version = "0.1.0"
 description = ""
 authors = ["Ronith Kandallu <ronithkandallu@gmail.com>"]
 readme = "README.md"
 repository = "https://github.com/ronithk/secrets"
-packages = [{ include = "secrets-cli" }]
+packages = [{ include = "secretscli" }]
 
 [tool.poetry.scripts]
-secrets = 'secrets-cli.secrets:main'
+secrets = 'secretscli.secrets:main'
 
 [tool.poetry.dependencies]
 python = "^3.10"
