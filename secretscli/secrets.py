@@ -50,7 +50,7 @@ def get_secrets(repo_details, profile=""):
         secrets = {}
         for item in secrets_array:
             item_contains_secret = "label" in item and "value" in item
-            item_section = item.get("section", {}).get("id", "")
+            item_section = item.get("section", {}).get("label", "")
             if item_contains_secret and item_section.lower() == profile.lower():
                 secrets[item['label']] = item['value']
 
@@ -80,13 +80,14 @@ def run(secrets, args):
 
 def main():
     parser = argparse.ArgumentParser(description="Secret manager for 1Password.")
+    parser.add_argument("--profile", "-p", default="", help="Specify profile name to switch between multiple sets of secrets within one repo.")
     parser.add_argument('command', choices=["run", "shell"] , help="Execute command in subshell.")
     parser.add_argument('args', nargs=argparse.REMAINDER, help="Additional arguments for the command.")
     args = parser.parse_args()
 
     try:
         repo_details = get_repo_details()
-        secrets = get_secrets(repo_details)
+        secrets = get_secrets(repo_details, profile=args.profile)
 
         if args.command == "run":
             run(secrets, args.args)

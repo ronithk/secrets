@@ -38,9 +38,8 @@ Now if we use `secrets` in the same `interface-club/hello-world` folder as befor
 3. Look for a 1Password item in that vault that matches `hello-world`.
 4. Look for all the "password" fields in that item and export them as environment variables.
 
-In the future, you will be able to make separate "sections" within an item and switch between them using a `--profile` flag. This is useful, for example, if you need different environment variables for dev, staging, production, etc.
-
-We will also add support for other sources of secrets besides 1Password, such as a private git repository.
+---
+Additionally, you create separate "sections" within a 1Password item and switch between them using the `--profile` or `-p` flag. This is useful, for example, if you need different environment variables for dev, staging, production, etc.
 
 # Usage
 To inject secrets into your environment at runtime, wrap your command with `secrets run`. For example, lets say you have a python project that you're running with `poetry run python main.py`. To inject your secrets:
