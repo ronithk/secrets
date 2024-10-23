@@ -4,6 +4,7 @@ import sys
 import uuid
 import os
 import argparse
+import tomllib
 
 def get_repo_details():
     try:
@@ -19,9 +20,26 @@ def get_repo_details():
         raise RuntimeError(f"Error: failed to get git repo details.")
 
 def get_secrets(repo_details, profile=""):
+    config_path = os.path.expanduser("~/.config/secrets.toml")
+
     try:
+        with open(config_path, "rb") as f:
+            config = tomllib.load(f)
+    except:
+        config = {}
+
+    github_config = config.get("github", {})
+    org_config = github_config.get(repo_details["owner"]["login"], {})
+    op_account = org_config.get("op_account", "")
+    op_vault = org_config.get("op_vault", "Secrets")
+
+    try:
+        subprocess.run(
+            [f"op", "signin", "--account", op_account],
+        )
+
         json_output = subprocess.check_output(
-            ['op', 'item', 'get', repo_details["name"], '--vault', repo_details["owner"]["login"], '--fields', 'type=concealed', '--format', 'json'],
+            [f"op", "item", "get", repo_details["name"], "--vault", op_vault, "--fields", "type=concealed", "--format", "json"],
             stderr=subprocess.PIPE,
             universal_newlines=True
         ).strip()
@@ -38,7 +56,7 @@ def get_secrets(repo_details, profile=""):
 
         return secrets
     except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Error: couldn't find secrets for {repo_details}.")
+        raise RuntimeError(f"Error: couldn't find secrets for \"{repo_details["name"]}\" in \"{op_vault}\" vault.")
 
 def shell(secrets):
     print("Spawing subshell with the following environment variables exported:")
