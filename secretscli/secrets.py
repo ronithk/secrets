@@ -58,6 +58,10 @@ def get_secrets(repo_details, profile=""):
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Error: couldn't find secrets for \"{repo_details["name"]}\" in \"{op_vault}\" vault.")
 
+def read(secrets):
+    for key, value in secrets.items():
+        print(f"{key}={value}")
+
 def shell(secrets):
     print("Spawing subshell with the following environment variables exported:")
     for key in secrets.keys():
@@ -81,7 +85,7 @@ def run(secrets, args):
 def main():
     parser = argparse.ArgumentParser(description="Secret manager for 1Password.")
     parser.add_argument("--profile", "-p", default="", help="Specify profile name to switch between multiple sets of secrets within one repo.")
-    parser.add_argument('command', choices=["run", "shell"] , help="Execute command in subshell.")
+    parser.add_argument('command', choices=["read", "run", "shell"] , help="Execute command in subshell.")
     parser.add_argument('args', nargs=argparse.REMAINDER, help="Additional arguments for the command.")
     args = parser.parse_args()
 
@@ -89,6 +93,8 @@ def main():
         repo_details = get_repo_details()
         secrets = get_secrets(repo_details, profile=args.profile)
 
+        if args.command == "read":
+            read(secrets)
         if args.command == "run":
             run(secrets, args.args)
         elif args.command == "shell":
