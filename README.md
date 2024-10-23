@@ -16,11 +16,27 @@ pip install git+https://github.com/ronithk/secrets.git
 
 However, you can also just add the secrets.py script to your PATH. Right now there are no external dependencies (although, this might change in the future).
 
+Note that you do need to have at least `Python 3.11` installed.
+
 # Setup
-Now, you can setup the secrets for your projects inside 1Password. Secrets resolves which secrets it should apply using the GitHub repo of the folder you're in. For example, if you're running Secrets in a folder linked to `ronithk/secrets`, it will:
-1. Look for a 1Password vault named `ronithk`.
-2. Look for an item in that vault named `secrets`.
-3. Look for all the "password" fields in that item and export them as environment variables.
+Let's setup the secrets for your projects inside 1Password. `secrets` resolves which secrets it should apply using the GitHub repo of the folder you're in. For example, if you're running Secrets in a folder linked to `interface-club/hello-world`, it will:
+1. Sign in to your last used 1Password account
+2. Look for a 1Password vault named `Secrets`.
+3. Look for a 1Password item in that vault that matches `hello-world`.
+4. Look for all the "password" fields in that item and export them as environment variables.
+
+If you are using multiple 1Password accounts, or multiple orgs: you can specify a specific 1Password account and vault to use for a specific organization in `~/.config/secrets.toml`.
+```toml
+[github.interface-club]
+op_account="{OP_ACCOUNT_USER_ID}"
+op_vault="repo-secrets"
+```
+
+Now if we use `secrets` in the same `interface-club/hello-world` folder as before, it will:
+1. Sign in to the 1Password account with the user ID specified in `~/.config/secrets.toml`.
+2. Look for a 1Password vault named `repo-secrets`.
+3. Look for a 1Password item in that vault that matches `hello-world`.
+4. Look for all the "password" fields in that item and export them as environment variables.
 
 In the future, you will be able to make separate "sections" within an item and switch between them using a `--profile` flag. This is useful, for example, if you need different environment variables for dev, staging, production, etc.
 
@@ -36,5 +52,3 @@ You can also start an interactive subshell with your secrets:
 ```bash
 secrets shell
 ```
-
-
