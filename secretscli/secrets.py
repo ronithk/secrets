@@ -35,11 +35,11 @@ def get_secrets(repo_details, profile=""):
 
     try:
         subprocess.run(
-            [f"op", "signin", "--account", op_account],
+            ["op", "signin", "--account", op_account],
         )
 
         json_output = subprocess.check_output(
-            [f"op", "item", "get", repo_details["name"], "--vault", op_vault, "--fields", "type=concealed", "--format", "json"],
+            ["op", "item", "get", repo_details["name"], "--vault", op_vault, "--fields", "type=concealed", "--format", "json"],
             stderr=subprocess.PIPE,
             universal_newlines=True
         ).strip()
@@ -56,7 +56,7 @@ def get_secrets(repo_details, profile=""):
 
         return secrets
     except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Error: couldn't find secrets for \"{repo_details["name"]}\" in \"{op_vault}\" vault.")
+        raise RuntimeError(f"Error: couldn't find secrets for \"{repo_details['name']}\" in \"{op_vault}\" vault.")
 
 def read(secrets):
     for key, value in secrets.items():
